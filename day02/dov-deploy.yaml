@@ -22,6 +22,7 @@ spec:
       containers:
       - name: dov-bear-container
         image: chukmunnlee/dov-bear:v1 
+        #image: chukmunnlee/nov10-fortune:v1-node24
         imagePullPolicy: IfNotPresent
         env:
         - name: PORT 
@@ -52,5 +53,5 @@ spec:
     app: dov-bear
     dept: eng
   ports:
-  - port: 8080 
+  - port: 80 
     targetPort: 5000
