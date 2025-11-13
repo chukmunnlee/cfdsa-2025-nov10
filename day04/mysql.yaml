@@ -1,0 +1,63 @@
+--- 
+apiVersion: v1 
+kind: Service 
+metadata: 
+  name: mysql-hsvc
+  namespace: default
+spec:
+  clusterIP: None
+  selector:
+    app: mysql 
+  ports:
+  - port: 3306
+
+---
+apiVersion: apps/v1 
+kind: StatefulSet 
+metadata:
+  name: mysql-deploy 
+  namespace: default
+spec:
+  replicas: 3
+  selector: 
+    matchLabels:
+      app: mysql
+  serviceName: mysql-hsvc
+  volumeClaimTemplates:
+  - metadata:
+      name: data-vol 
+    spec: 
+      resources:
+        requests:
+          storage: 1Gi
+      accessModes: [ ReadWriteOncePod ]
+      storageClassName: do-block-storage
+  template:
+    metadata:
+      labels:
+        app: mysql 
+    spec:
+      containers:
+      - name: mysql-container 
+        image: mysql:8
+        env:
+        - name: MYSQL_ROOT_PASSWORD 
+          value: changeit 
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: data-vol 
+          mountPath: /var/lib/mysql
+  
+--- 
+apiVersion: v1 
+kind: Service 
+metadata: 
+  name: mysql-svc
+  namespace: default
+spec:
+  type: ClusterIP 
+  selector:
+    app: mysql 
+  ports:
+  - port: 3306

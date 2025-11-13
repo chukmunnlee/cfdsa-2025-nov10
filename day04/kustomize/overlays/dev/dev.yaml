@@ -1,0 +1,158 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Namespace","metadata":{"annotations":{},"labels":{"env":"dev"},"name":"dev-ns"}}
+    creationTimestamp: "2025-11-13T03:09:27Z"
+    labels:
+      env: dev
+      kubernetes.io/metadata.name: dev-ns
+    name: dev-ns
+    resourceVersion: "619830"
+    uid: 58b77a79-d3a8-4b26-8752-fd20568b6c4c
+  spec:
+    finalizers:
+    - kubernetes
+  status:
+    phase: Active
+- apiVersion: v1
+  data:
+    INSTANCE_NAME: Z2VuZXJhdGVkIGZyb20ga3VzdG9taXpl
+  kind: Secret
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","data":{"INSTANCE_NAME":"Z2VuZXJhdGVkIGZyb20ga3VzdG9taXpl"},"kind":"Secret","metadata":{"annotations":{},"labels":{"env":"dev"},"name":"chuk-dov-secret-7m9hm84b5k","namespace":"dev-ns"},"type":"Opaque"}
+    creationTimestamp: "2025-11-13T03:09:27Z"
+    labels:
+      env: dev
+    name: chuk-dov-secret-7m9hm84b5k
+    namespace: dev-ns
+    resourceVersion: "619833"
+    uid: 25130b1a-2855-4ec9-bae9-75a91cdd1a23
+  type: Opaque
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"dov","env":"dev"},"name":"chuk-dov-svc","namespace":"dev-ns"},"spec":{"ports":[{"port":80,"targetPort":5000}],"selector":{"app":"dov-bear","dept":"eng","env":"dev"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-11-13T03:09:27Z"
+    labels:
+      app: dov
+      env: dev
+    name: chuk-dov-svc
+    namespace: dev-ns
+    resourceVersion: "619837"
+    uid: 88ef8c75-6f3f-4427-9d85-e5ada21faf73
+  spec:
+    clusterIP: 10.109.39.148
+    clusterIPs:
+    - 10.109.39.148
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 5000
+    selector:
+      app: dov-bear
+      dept: eng
+      env: dev
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"dov","env":"dev"},"name":"chuk-dov-deploy","namespace":"dev-ns"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"dov-bear","dept":"eng","env":"dev"}},"template":{"metadata":{"labels":{"app":"dov-bear","dept":"eng","env":"dev"},"name":"dov-bear"},"spec":{"containers":[{"env":[{"name":"PORT","value":"5000"},{"name":"INSTANCE_NAME","valueFrom":{"fieldRef":{"fieldPath":"spec.nodeName"}}},{"name":"INSTANCE_HASH","valueFrom":{"secretKeyRef":{"key":"INSTANCE_NAME","name":"chuk-dov-secret-7m9hm84b5k"}}}],"image":"chukmunnlee/dov-bear:v1","imagePullPolicy":"IfNotPresent","name":"dov-bear-container","ports":[{"containerPort":5000}]}]}}}}
+    creationTimestamp: "2025-11-13T03:09:27Z"
+    generation: 1
+    labels:
+      app: dov
+      env: dev
+    name: chuk-dov-deploy
+    namespace: dev-ns
+    resourceVersion: "619867"
+    uid: aa3bc735-db8f-45ab-a1ef-37249a74b8b4
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: dov-bear
+        dept: eng
+        env: dev
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: dov-bear
+          dept: eng
+          env: dev
+        name: dov-bear
+      spec:
+        containers:
+        - env:
+          - name: PORT
+            value: "5000"
+          - name: INSTANCE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: INSTANCE_HASH
+            valueFrom:
+              secretKeyRef:
+                key: INSTANCE_NAME
+                name: chuk-dov-secret-7m9hm84b5k
+          image: chukmunnlee/dov-bear:v1
+          imagePullPolicy: IfNotPresent
+          name: dov-bear-container
+          ports:
+          - containerPort: 5000
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-11-13T03:09:29Z"
+      lastUpdateTime: "2025-11-13T03:09:29Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2025-11-13T03:09:27Z"
+      lastUpdateTime: "2025-11-13T03:09:29Z"
+      message: ReplicaSet "chuk-dov-deploy-5cf685969b" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+kind: List
+metadata: {}
